@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<link rel="stylesheet" href="css/mui.min.css">
+		<style type="text/css">
+			#offCanvasHide{padding: 12px;color: white;}
+			.mui-content{text-align: center;}
+			.tip{padding-top: 16px;}
+			.datalist { list-style-type: none }
+			.datalist li{height: 120px;}
+		</style>
+	</head>
+
+	<body>
+		<!--侧滑菜单容器-->
+		<div id="offCanvasWrapper" class="mui-off-canvas-wrap mui-draggable mui-slide-in">
+			
+			<!--菜单-->
+			<aside class="mui-off-canvas-right">
+				<div id="offCanvasSideScroll" class="mui-scroll-wrapper">
+					<!--菜单内容-->
+					<div class="mui-scroll">
+						<p id="offCanvasHide">点我关闭</p>
+					</div>
+				</div>
+			</aside>
+			
+			<!--主页面-->
+			<div class="mui-inner-wrap">
+				
+				<!--主页面标题-->
+				<header class="mui-bar mui-bar-nav">
+					<h1 class="mui-title">mui侧滑菜单</h1>
+					<p id="offCanvasShow" class="mui-btn mui-btn-link mui-pull-right">显示</p>
+				</header>
+				
+				<!--主页面内容-->
+				<div id="offCanvasContentScroll" class="mui-content mui-scroll-wrapper">
+					<div class="mui-scroll">
+						
+						<!--主页面真正内容区域-->
+						<p class="tip">mui侧滑菜单的最精简案例 <br />mui侧滑菜单: http://dev.dcloud.net.cn/mui/ui/#offcanvas</p>
+						<ul class="datalist">
+							<li>1列表内容</li>
+							<li>2列表内容</li>
+							<li>3列表内容</li>
+							<li>4列表内容</li>
+							<li>5列表内容</li>
+							<li>6列表内容</li>
+							<li>7列表内容</li>
+							<li>8列表内容</li>
+							<li>9列表内容</li>
+						</ul>
+						
+					</div>
+				</div>
+				
+				<!--侧滑菜单的遮罩-->
+				<div class="mui-off-canvas-backdrop"></div>
+			</div>
+		</div>
+	</body>
+	
+	<script src="js/mui.min.js"></script>
+	<script>
+		mui.init({ swipeBack: false });
+		mui.ready(function() {
+			
+			//侧滑容器父节点
+			var offCanvasWrapper = mui('#offCanvasWrapper');
+			
+			//显示
+			document.getElementById('offCanvasShow').addEventListener('tap', function() {
+				offCanvasWrapper.offCanvas('show');
+			});
+			
+			//关闭
+			document.getElementById('offCanvasHide').addEventListener('tap', function() {
+				offCanvasWrapper.offCanvas('close');
+			});
+			
+			//初始化mui区域滚动
+			mui('#offCanvasSideScroll').scroll();
+			mui('#offCanvasContentScroll').scroll();
+			
+		})
+	</script>
+</html>

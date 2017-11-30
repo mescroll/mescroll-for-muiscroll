@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+
+		<link rel="stylesheet" type="text/css" href="css/mui.min.css" />
+		<style type="text/css">
+			.mui-scroll{text-align: center;}
+			.tip{padding-top: 16px;}
+			.datalist { list-style-type: none }
+			.datalist li { height: 100px; }
+		</style>
+	</head>
+
+	<body>
+		<!--mui标题-->
+		<header class="mui-bar mui-bar-nav">
+			<h1 class="mui-title">mui的区域滑动</h1>
+		</header>
+		<!--mui内容-->
+		<div class="mui-content mui-scroll-wrapper">
+			<div class="mui-scroll">
+				<p class="tip">mui区域滑动的最精简案例 <br />mui区域滚动: http://dev.dcloud.net.cn/mui/ui/#scroll</p>
+				<ul class="datalist">
+					<li>列表数据 111</li>
+					<li>列表数据 222</li>
+					<li>列表数据 333</li>
+					<li>列表数据 444</li>
+					<li>列表数据 555</li>
+					<li>列表数据 666</li>
+					<li>列表数据 777</li>
+					<li>列表数据 888</li>
+					<li>列表数据 999</li>
+					<li>列表数据 1010</li>
+					<li>列表数据 1111</li>
+					<li>列表数据 1212</li>
+					<li>列表数据 1313</li>
+					<li>列表数据 1414</li>
+					<li>列表数据 1515</li>
+				</ul>
+			</div>
+		</div>
+	</body>
+
+	<script src="js/mui.min.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript" charset="utf-8">
+		mui.ready(function() {
+			//初始化区域滚动
+			var scroll = mui(".mui-scroll-wrapper").scroll();
+//			
+//			//监听区域滚动的滑动事件
+//			document.addEventListener("scroll", function() {
+//				console.log( -scroll.y ); //获取滚动条的位置
+//			});
+//			
+//			//点击获取滚动条的位置
+//			document.body.addEventListener("tap",function () {
+//				console.log( -scroll.y ) //获取滚动条的位置
+//			})
+		})
+	</script>
+
+</html>

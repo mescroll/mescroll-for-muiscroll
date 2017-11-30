@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+
+		<link rel="stylesheet" type="text/css" href="css/mui.min.css" />
+		<link rel="stylesheet" href="css/mescroll.min.css">
+		<style type="text/css">
+			.mui-bar,
+			.mui-content{background-color: white}
+			/*提示*/
+			.tip{padding-top: 16px;text-align: center;}
+			/*展示上拉加载的数据列表*/
+			.data-list li{
+				padding: 10px 30px;
+				border-bottom: 1px solid #eee;
+			}
+			.data-list .pd-name{
+				font-size: 16px;
+				line-height: 20px;
+				height: 40px;
+				overflow: hidden;
+			}
+			.data-list .pd-price{
+				margin-top: 8px;
+				color: red;
+			}
+			.data-list .pd-sold{
+				font-size: 12px;
+				margin-top: 8px;
+				color: gray;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<h1 class="mui-title">mescroll在mui区域滑动中的运用</h1>
+		</header>
+		<div id="mescroll" class="mui-content mui-scroll-wrapper">
+			<div class="mui-scroll">
+				<!--数据列表-->
+				<p class="tip">mescroll文档: https://github.com/mescroll/mescroll<br />mui区域滚动: http://dev.dcloud.net.cn/mui/ui/#scroll</p>
+				<ul id="dataList" class="data-list">
+					<!--<li>
+						<p class="pd-name">商品标题商品标题商品标题商品标题商品标题商品</p>
+						<p class="pd-price">200.00 元</p>
+						<p class="pd-sold">已售50件</p>
+					</li>-->
+				</ul>
+			</div>
+		</div>
+	</body>
+	
+	<script src="js/mui.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/mescroll-for-muiscroll.js" type="text/javascript" charset="utf-8"></script>
+	<!--mescroll本身不依赖jq,这里为了模拟发送ajax请求-->
+	<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript" charset="utf-8">
+		$(function(){
+			//创建MeScroll对象,内部已默认开启下拉刷新,自动执行up.callback,重置列表数据;
+			var mescroll = new MeScroll("mescroll", {
+				up: {
+					clearEmptyId: "dataList", //1.下拉刷新时会自动先清空此列表,再加入数据; 2.无任何数据时会在此列表自动提示空
+					callback: getListData, //上拉回调,此处可简写; 相当于 callback: function (page) { getListData(page); }
+					toTop: { src: "img/mescroll-totop.png" } //回到顶部按钮
+				}
+			},{
+//				bounce:false //是否启用回弹效果,默认true; 如果设置false,可解决一个小小的问题: 下拉的时候不会感觉下拉区域被遮住一点点
+			});
+			
+			/*联网加载列表数据  page = {num:1, size:10}; num:当前页 从1开始, size:每页数据条数 */
+			function getListData(page){
+				//联网加载数据
+				console.log("page.num=="+page.num);
+				getListDataFromNet(page.num, page.size, function(data){
+					//联网成功的回调,隐藏下拉刷新和上拉加载的状态;
+					mescroll.endSuccess(data.length);//传参:数据的总数; mescroll会自动判断列表如果无任何数据,则提示空;列表无下一页数据,则提示无更多数据;
+					//设置列表数据,因为配置了emptyClearId,第一页会清空dataList的数据,所以setListData应该写在最后;
+					setListData(data);
+				}, function(){
+					//联网失败的回调,隐藏下拉刷新和上拉加载的状态;
+	                mescroll.endErr();
+				});
+			}
+			
+			/*设置列表数据*/
+			function setListData(data){
+				var listDom=document.getElementById("dataList");
+				for (var i = 0; i < data.length; i++) {
+					var pd=data[i];
+					
+					var str='';
+					str+='<p class="pd-name">'+pd.pdName+'</p>';
+					str+='<p class="pd-price">'+pd.pdPrice+' 元</p>';
+					str+='<p class="pd-sold">已售'+pd.pdSold+'件</p>';
+					
+					var liDom=document.createElement("li");
+					liDom.innerHTML=str;
+					listDom.appendChild(liDom);
+				}
+			}
+			
+			/*联网加载列表数据*/
+			function getListDataFromNet(pageNum,pageSize,successCallback,errorCallback) {
+				//延时一秒,模拟联网
+                setTimeout(function () {
+                	$.ajax({
+		                type: 'GET',
+		                url: 'js/pdlist.json',
+//		                url: 'js/pdlist.json?num='+pageNum+"&size="+pageSize,
+		                dataType: 'json',
+		                success: function(data){
+		                	//模拟分页数据
+		                	var listData=[];
+							for (var i = (pageNum-1)*pageSize; i < pageNum*pageSize; i++) {
+			            		if(i==data.length) break;
+			            		listData.push(data[i]);
+			            	}
+		                	successCallback(listData);
+		                },
+		                error: errorCallback
+		            });
+                },1000)
+			}
+			
+			//禁止PC浏览器拖拽图片,避免与下拉刷新冲突;如果仅在移动端使用,可删除此代码
+			document.ondragstart=function() {return false;}
+		});
+	</script>
+
+</html>
