@@ -9,7 +9,7 @@
 <br/><br/>
 
 <b> mescroll</b> 是原生 div 的 overflow 滚动,性能更优,兼容性更好  
--- 文档: https://github.com/mescroll/mescroll-for-muiscroll
+-- 文档: https://github.com/mescroll/mescroll
 <br/><br/>
 
 如果想在 mui-scroll 中使用 mescroll 则需引用<b> mescroll-for-muiscroll.min.js</b>  
