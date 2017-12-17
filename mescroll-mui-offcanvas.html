@@ -8,8 +8,8 @@
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="apple-mobile-web-app-status-bar-style" content="black">
 
-		<link rel="stylesheet" href="css/mui.min.css">
-		<link rel="stylesheet" href="css/mescroll.min.css">
+		<link rel="stylesheet" href="dist/mui.min.css">
+		<link rel="stylesheet" href="dist/mescroll.min.css">
 		<style type="text/css">
 			.mui-bar{background-color: white;border-bottom: 1px solid #eee;}
 			.mui-content{background-color: white}
@@ -58,11 +58,15 @@
 				
 				<!--主页面标题-->
 				<header class="mui-bar mui-bar-nav">
-					<h1 class="mui-title">mescroll在mui侧滑菜单中的运用</h1>
+					<a href="index.html"><h1 class="mui-title">mescroll在mui侧滑菜单中的运用</h1></a>
 					<p id="offCanvasShow" class="mui-btn mui-btn-link mui-pull-right">显示</p>
 				</header>
 				
-				<!--主页面内容-->
+				<!--主页面内容,区域滑动:
+					需引入mui.min.css,mui.min.js
+					html结构必须有mui-scroll-wrapper和mui-scroll
+					无需加mescroll的class
+				-->
 				<div id="offCanvasContentScroll" class="mui-content mui-scroll-wrapper">
 					<div class="mui-scroll">
 						
@@ -85,8 +89,8 @@
 		</div>
 	</body>
 	
-	<script src="js/mui.min.js"></script>
-	<script src="js/mescroll-for-muiscroll.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="dist/mui.min.js"></script>
+	<script src="dist/mescroll-for-muiscroll.min.js" type="text/javascript" charset="utf-8"></script>
 	<!--mescroll本身不依赖jq,这里为了模拟发送ajax请求-->
 	<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js" type="text/javascript" charset="utf-8"></script>
 	<script>
@@ -108,24 +112,55 @@
 			
 			//创建MeScroll对象,内部已默认开启下拉刷新,自动执行up.callback,重置列表数据;内部已初始化mui的区域滚动
 			var mescroll = new MeScroll("offCanvasContentScroll", {
-				up: {
-					clearEmptyId: "dataList", //1.下拉刷新时会自动先清空此列表,再加入数据; 2.无任何数据时会在此列表自动提示空
-					callback: getListData, //上拉回调,此处可简写; 相当于 callback: function (page) { getListData(page); }
-					toTop: { src: "img/mescroll-totop.png" } //回到顶部按钮
+				//mescroll的配置
+					up: {
+						clearEmptyId: "dataList", //1.下拉刷新时会自动先清空此列表,再加入数据; 2.无任何数据时会在此列表自动提示空
+						callback: getListData, //上拉回调,此处可简写; 相当于 callback: function (page) { getListData(page); }
+						toTop: { //回到顶部按钮
+							src: "img/mescroll-totop.png" ,
+							supportTap: true //默认点击事件用onclick,会有300ms的延时;如果您的运行环境支持tap,则可配置true;
+						}, 
+						onScroll: function(mescroll, y, isUp){ //列表滑动监听,默认onScroll: null;
+							//y为列表当前滚动条的位置
+							console.log("up --> onScroll 列表当前滚动的距离 y = " + y + ", 是否向上滑动 isUp = " + isUp);
+						},
+						//isBounce: false //如果您的项目是在iOS的微信,QQ,Safari等浏览器访问的,则建议配置为false;解析(必读) http://www.mescroll.com/qa.html?v=130#q10
+					}
+				} , {
+				//mui区域滚动的配置
+//					bounce:false, //是否启用回弹效果,默认true; 如果设置false,可解决一个小小的问题: 下拉的时候不会感觉下拉区域被遮住一点点
+//					scrollY: true, //是否竖向滚动
+//					scrollX: false, //是否横向滚动
+//					startX: 0, //初始化时滚动至x
+//					startY: 0, //初始化时滚动至y
+//					indicators: true, //是否显示滚动条
+//					deceleration:0.0006, //阻尼系数,系数越小滑动越灵敏
 				}
-			}
-				// ,{bounce:false} //是否启用回弹效果,默认true; 如果设置false,可解决一个小小的问题: 下拉的时候不会感觉下拉区域被遮住一点点
 			);
 			
 			/*联网加载列表数据  page = {num:1, size:10}; num:当前页 从1开始, size:每页数据条数 */
 			function getListData(page){
 				//联网加载数据
 				console.log("page.num=="+page.num);
-				getListDataFromNet(page.num, page.size, function(data){
+				getListDataFromNet(page.num, page.size, function(curPageData){
 					//联网成功的回调,隐藏下拉刷新和上拉加载的状态;
-					mescroll.endSuccess(data.length);//传参:数据的总数; mescroll会自动判断列表如果无任何数据,则提示空;列表无下一页数据,则提示无更多数据;
+					//mescroll会根据传的参数,自动判断列表如果无任何数据,则提示空;列表无下一页数据,则提示无更多数据;
+					console.log("page.num="+page.num+", page.size="+page.size+", curPageData.length="+curPageData.length);
+					
+					//方法一(推荐): 后台接口有返回列表的总页数 totalPage
+					//mescroll.endByPage(curPageData.length, totalPage); //必传参数(当前页的数据个数, 总页数)
+					
+					//方法二(推荐): 后台接口有返回列表的总数据量 totalSize
+					//mescroll.endBySize(curPageData.length, totalSize); //必传参数(当前页的数据个数, 总数据量)
+					
+					//方法三(推荐): 您有其他方式知道是否有下一页 hasNext
+					//mescroll.endSuccess(curPageData.length, hasNext); //必传参数(当前页的数据个数, 是否有下一页true/false)
+					
+					//方法四 (不推荐),会存在一个小问题:比如列表共有20条数据,每页加载10条,共2页.如果只根据当前页的数据个数判断,则需翻到第三页才会知道无更多数据,如果传了hasNext,则翻到第二页即可显示无更多数据.
+					mescroll.endSuccess(curPageData.length);
+					
 					//设置列表数据,因为配置了emptyClearId,第一页会清空dataList的数据,所以setListData应该写在最后;
-					setListData(data);
+					setListData(curPageData);
 				}, function(){
 					//联网失败的回调,隐藏下拉刷新和上拉加载的状态;
 	                mescroll.endErr();
@@ -149,7 +184,11 @@
 				}
 			}
 			
-			/*联网加载列表数据*/
+			/*联网加载列表数据
+			 在您的实际项目中,请参考官方写法: http://www.mescroll.com/api.html#tagUpCallback
+			 请忽略getListDataFromNet的逻辑,这里仅仅是在本地模拟分页数据,本地演示用
+			 实际项目以您服务器接口返回的数据为准,无需本地处理分页.
+			 * */
 			function getListDataFromNet(pageNum,pageSize,successCallback,errorCallback) {
 				//延时一秒,模拟联网
                 setTimeout(function () {
@@ -172,8 +211,6 @@
                 },1000)
 			}
 			
-			//禁止PC浏览器拖拽图片,避免与下拉刷新冲突;如果仅在移动端使用,可删除此代码
-			document.ondragstart=function() {return false;}
 		})
 	</script>
 

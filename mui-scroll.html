@@ -6,7 +6,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
 		<meta name="apple-mobile-web-app-capable" content="yes">
 
-		<link rel="stylesheet" type="text/css" href="css/mui.min.css" />
+		<link rel="stylesheet" type="text/css" href="dist/mui.min.css" />
 		<style type="text/css">
 			.mui-scroll{text-align: center;}
 			.tip{padding-top: 16px;}
@@ -16,13 +16,17 @@
 	</head>
 
 	<body>
-		<!--mui标题-->
 		<header class="mui-bar mui-bar-nav">
-			<h1 class="mui-title">mui的区域滑动</h1>
+			<a href="index.html">
+				<h1 class="mui-title">mui的区域滑动</h1>
+			</a>
 		</header>
-		<!--mui内容-->
+		
+		<!--mui的区域滑动,html结构必须有mui-scroll-wrapper和mui-scroll-->
 		<div class="mui-content mui-scroll-wrapper">
 			<div class="mui-scroll">
+				
+				<!--滚动区域的内容-->
 				<p class="tip">mui区域滑动的最精简案例 <br />mui区域滚动: http://dev.dcloud.net.cn/mui/ui/#scroll</p>
 				<ul class="datalist">
 					<li>列表数据 111</li>
@@ -41,25 +45,21 @@
 					<li>列表数据 1414</li>
 					<li>列表数据 1515</li>
 				</ul>
+				
 			</div>
 		</div>
 	</body>
 
-	<script src="js/mui.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="dist/mui.min.js" type="text/javascript" charset="utf-8"></script>
 	<script type="text/javascript" charset="utf-8">
 		mui.ready(function() {
 			//初始化区域滚动
 			var scroll = mui(".mui-scroll-wrapper").scroll();
-//			
+
 //			//监听区域滚动的滑动事件
 //			document.addEventListener("scroll", function() {
 //				console.log( -scroll.y ); //获取滚动条的位置
 //			});
-//			
-//			//点击获取滚动条的位置
-//			document.body.addEventListener("tap",function () {
-//				console.log( -scroll.y ) //获取滚动条的位置
-//			})
 		})
 	</script>
 
